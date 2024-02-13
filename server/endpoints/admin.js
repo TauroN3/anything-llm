@@ -321,7 +321,20 @@ function adminEndpoints(app) {
     [validatedRequest, flexUserRoleValid([ROLES.admin, ROLES.manager])],
     async (request, response) => {
       try {
-        const updates = reqBody(request);
+        const { users_can_delete_workspaces, limit_user_messages, message_limit, footer_data } = reqBody(request);
+        const updates = {};
+        if (users_can_delete_workspaces) {
+          updates.users_can_delete_workspaces = users_can_delete_workspaces;
+        }
+        if (limit_user_messages) {
+          updates.limit_user_messages = limit_user_messages;
+        }
+        if (message_limit) {
+          updates.message_limit = message_limit;
+        }
+        if (footer_data) {
+          updates.footer_data = footer_data;
+        }
         await SystemSettings.updateSettings(updates);
         response.status(200).json({ success: true, error: null });
       } catch (e) {
